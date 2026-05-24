@@ -696,7 +696,15 @@ public class InputValidator {
 ### Diary Entries
 
 ------------------------------------------------------------------------------------------------------------------------------
+Diary entry 1
 
-*Add diary entries here detailing what you have done, wny you have done it, and any problems encountered.*
+I reviewed the Milestone 4 template and checked the GitHub link for the Milestone 4 repository. I compare my latest code with the work completed in Milestone 3 and identified which classes needed improvement, including Journey, FareCalculator, JourneyManager, InputValidator. I did this so that my Milestone 4 work will continue logically from the previous milestone. The main issue was making sure the Gantt chart and diary entries matched the actual code in my latest submission.
+
+Diary entry 2
+
+I continued to improve the program's core classes. I reviewed the Journey class to ensure it stored trip information correctly, and I improved the FareCalculator class to use the provided CityRideDataset for base fares, discounts, and daily limits. I also reviewed the JourneyManager methods for adding, deleting, filtering, and summarizing trips. I did this because these classes handle the core functionality of the CityRide Lite program.
+
+Diary entry 3
+I reviewed the final code structure, comments, and professional standards. I checked that each public class was clearly organized and that the code used clear sections such as Attributes,  Constructors, Getter methods, Setter methods, and process methods. I also updated GitHub and prepared a Milestone 4 submission. I did this to ensure the code was organized, readable, and consistent with the latest Gantt chart. The main issue was ensuring that the GitHub repository, journal entries, Gantt chart.
 
 ------------------------------------------------------------------------------------------------------------------------------
