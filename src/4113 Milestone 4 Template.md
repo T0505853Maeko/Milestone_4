@@ -607,6 +607,82 @@ public class JourneyManager {
     }
 }
 ```
+Validator input
+```java
+public class InputValidator {
+
+    // Attributes
+    private static final int MIN_ZONE = CityRideDataset.MIN_ZONE;
+    private static final int MAX_ZONE = CityRideDataset.MAX_ZONE;
+
+    // Constructors
+    public InputValidator() {
+    }
+
+    // Getter methods
+    public int getMinimumZone() {
+        return MIN_ZONE;
+    }
+    public int getMaximumZone() {
+        return MAX_ZONE;
+    }
+
+    // Validation methods
+    public boolean isValidZone(int zone) {
+        return zone >= MIN_ZONE && zone <= MAX_ZONE;
+    }
+    public boolean isBlank(String value) {
+        return value == null || value.trim().isEmpty();
+    }
+    public boolean isValidDate(String journeyDate) {
+        return !isBlank(journeyDate);
+    }
+    public boolean isValidPassengerType(String passengerType) {
+        if (isBlank(passengerType)) {
+            return false;
+        }
+
+        String cleanPassengerType = cleanPassengerType(passengerType);
+
+        return cleanPassengerType.equals("ADULT")
+                || cleanPassengerType.equals("STUDENT")
+                || cleanPassengerType.equals("CHILD")
+                || cleanPassengerType.equals("SENIOR_CITIZEN");
+    }
+
+    public boolean isValidTimeBand(String timeBand) {
+        if (isBlank(timeBand)) {
+            return false;
+        }
+        String cleanTimeBand = cleanTimeBand(timeBand);
+        return cleanTimeBand.equals("PEAK")
+                || cleanTimeBand.equals("OFF_PEAK");
+    }
+    public CityRideDataset.PassengerType convertToPassengerType(String passengerType) {
+        String cleanPassengerType = cleanPassengerType(passengerType);
+        return CityRideDataset.PassengerType.valueOf(cleanPassengerType);
+    }
+    public CityRideDataset.TimeBand convertToTimeBand(String timeBand) {
+        String cleanTimeBand = cleanTimeBand(timeBand);
+        return CityRideDataset.TimeBand.valueOf(cleanTimeBand);
+    }
+
+    private String cleanPassengerType(String passengerType) {
+        return passengerType
+                .trim()
+                .toUpperCase()
+                .replace(" ", "_")
+                .replace("-", "_");
+    }
+    private String cleanTimeBand(String timeBand) {
+        return timeBand
+                .trim()
+                .toUpperCase()
+                .replace(" ", "_")
+                .replace("-", "_");
+    }
+}
+```
 
 ------------------------------------------------------------------------------------------------------------------------------
 
