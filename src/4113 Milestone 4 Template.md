@@ -9,7 +9,7 @@
 | Student ID Number  | P505853                         |
 | Date of Submission | 24 May 2026                     |
 | Word Count         |                                 |
-| GItHub Link        |                                 |
+| GItHub Link        |https://github.com/T0505853Maeko/Milestone_4                                 |
 
 - [ ] *I confirm that this assignment is my own work. Where I have referred to academic sources, I have provided in-text citations and included the sources in
   the final reference list.*
@@ -27,6 +27,311 @@ Paste the current program code created so far. It does not have to be runnable c
 ------------------------------------------------------------------------------------------------------------------------------
 
 *Program code goes here:*
+```java
+// This class stores one public transport journey for CityRide Lite.
+import java.math.BigDecimal;
+
+
+public class Journey {
+
+    // Attributes
+    private int journeyId;
+    private String journeyDate;
+    private int fromZone;
+    private int toZone;
+    private CityRideDataset.TimeBand timeBand;
+    private CityRideDataset.PassengerType passengerType;
+    private int zonesCrossed;
+    private BigDecimal baseFare;
+    private BigDecimal discountAmount;
+    private BigDecimal discountedFare;
+    private BigDecimal chargedFare;
+
+    // Constructors
+    public Journey() {
+        this.journeyId = 0;
+        this.journeyDate = "";
+        this.fromZone = 1;
+        this.toZone = 1;
+        this.timeBand = CityRideDataset.TimeBand.OFF_PEAK;
+        this.passengerType = CityRideDataset.PassengerType.ADULT;
+        this.zonesCrossed = 1;
+        this.baseFare = BigDecimal.ZERO;
+        this.discountAmount = BigDecimal.ZERO;
+        this.discountedFare = BigDecimal.ZERO;
+        this.chargedFare = BigDecimal.ZERO;
+    }
+
+    public Journey(int journeyId, String journeyDate, int fromZone, int toZone,
+                   CityRideDataset.TimeBand timeBand,
+                   CityRideDataset.PassengerType passengerType) {
+        this.journeyId = journeyId;
+        this.journeyDate = journeyDate;
+        this.fromZone = fromZone;
+        this.toZone = toZone;
+        this.timeBand = timeBand;
+        this.passengerType = passengerType;
+        this.zonesCrossed = calculateZonesCrossed();
+        this.baseFare = BigDecimal.ZERO;
+        this.discountAmount = BigDecimal.ZERO;
+        this.discountedFare = BigDecimal.ZERO;
+        this.chargedFare = BigDecimal.ZERO;
+    }
+
+    // Getter methods
+    public int getJourneyId() {
+        return journeyId;
+    }
+
+    public String getJourneyDate() {
+        return journeyDate;
+    }
+
+    public int getFromZone() {
+        return fromZone;
+    }
+
+    public int getToZone() {
+        return toZone;
+    }
+
+    public CityRideDataset.TimeBand getTimeBand() {
+        return timeBand;
+    }
+
+    public CityRideDataset.PassengerType getPassengerType() {
+        return passengerType;
+    }
+
+    public int getZonesCrossed() {
+        return zonesCrossed;
+    }
+
+    public BigDecimal getBaseFare() {
+        return baseFare;
+    }
+
+    public BigDecimal getDiscountAmount() {
+        return discountAmount;
+    }
+
+    public BigDecimal getDiscountedFare() {
+        return discountedFare;
+    }
+
+    public BigDecimal getChargedFare() {
+        return chargedFare;
+    }
+
+    // Setter methods
+    public void setJourneyId(int journeyId) {
+        this.journeyId = journeyId;
+    }
+
+    public void setJourneyDate(String journeyDate) {
+        this.journeyDate = journeyDate;
+    }
+
+    public void setFromZone(int fromZone) {
+        this.fromZone = fromZone;
+        this.zonesCrossed = calculateZonesCrossed();
+    }
+
+    public void setToZone(int toZone) {
+        this.toZone = toZone;
+        this.zonesCrossed = calculateZonesCrossed();
+    }
+
+    public void setTimeBand(CityRideDataset.TimeBand timeBand) {
+        this.timeBand = timeBand;
+    }
+
+    public void setPassengerType(CityRideDataset.PassengerType passengerType) {
+        this.passengerType = passengerType;
+    }
+
+    public void setBaseFare(BigDecimal baseFare) {
+        this.baseFare = baseFare;
+    }
+
+    public void setDiscountAmount(BigDecimal discountAmount) {
+        this.discountAmount = discountAmount;
+    }
+
+    public void setDiscountedFare(BigDecimal discountedFare) {
+        this.discountedFare = discountedFare;
+    }
+
+    public void setChargedFare(BigDecimal chargedFare) {
+        this.chargedFare = chargedFare;
+    }
+
+    // Calculation methods
+    public int calculateZonesCrossed() {
+        return Math.abs(toZone - fromZone) + 1;
+    }
+}
+```
+
+Fare Calculator
+
+```java
+// This class calculates fares, discounts, and daily cap charges.
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+// This class calculates fares, discounts, and daily cap charges.
+public class FareCalculator {
+
+    // Attributes
+    private BigDecimal adultRunningTotal;
+    private BigDecimal studentRunningTotal;
+    private BigDecimal childRunningTotal;
+    private BigDecimal seniorRunningTotal;
+
+    // Constructors
+    public FareCalculator() {
+        this.adultRunningTotal = BigDecimal.ZERO;
+        this.studentRunningTotal = BigDecimal.ZERO;
+        this.childRunningTotal = BigDecimal.ZERO;
+        this.seniorRunningTotal = BigDecimal.ZERO;
+    }
+
+    // Getter methods
+    public BigDecimal getAdultRunningTotal() {
+        return adultRunningTotal;
+    }
+
+    public BigDecimal getStudentRunningTotal() {
+        return studentRunningTotal;
+    }
+
+    public BigDecimal getChildRunningTotal() {
+        return childRunningTotal;
+    }
+
+    public BigDecimal getSeniorRunningTotal() {
+        return seniorRunningTotal;
+    }
+
+    // Setter methods
+    public void setAdultRunningTotal(BigDecimal adultRunningTotal) {
+        this.adultRunningTotal = adultRunningTotal;
+    }
+
+    public void setStudentRunningTotal(BigDecimal studentRunningTotal) {
+        this.studentRunningTotal = studentRunningTotal;
+    }
+
+    public void setChildRunningTotal(BigDecimal childRunningTotal) {
+        this.childRunningTotal = childRunningTotal;
+    }
+
+    public void setSeniorRunningTotal(BigDecimal seniorRunningTotal) {
+        this.seniorRunningTotal = seniorRunningTotal;
+    }
+
+    // Fare methods
+    public BigDecimal calculateBaseFare(int fromZone, int toZone, CityRideDataset.TimeBand timeBand) {
+        BigDecimal baseFare = CityRideDataset.getBaseFare(fromZone, toZone, timeBand);
+
+        if (baseFare == null) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+
+        return roundToTwoDecimals(baseFare);
+    }
+
+    public BigDecimal getDiscountRate(CityRideDataset.PassengerType passengerType) {
+        BigDecimal discountRate = CityRideDataset.DISCOUNT_RATE.get(passengerType);
+
+        if (discountRate == null) {
+            return BigDecimal.ZERO;
+        }
+
+        return discountRate;
+    }
+
+    public BigDecimal getDailyCap(CityRideDataset.PassengerType passengerType) {
+        BigDecimal dailyCap = CityRideDataset.DAILY_CAP.get(passengerType);
+
+        if (dailyCap == null) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+
+        return roundToTwoDecimals(dailyCap);
+    }
+
+    public BigDecimal getRunningTotal(CityRideDataset.PassengerType passengerType) {
+        if (passengerType == CityRideDataset.PassengerType.STUDENT) {
+            return studentRunningTotal;
+        } else if (passengerType == CityRideDataset.PassengerType.CHILD) {
+            return childRunningTotal;
+        } else if (passengerType == CityRideDataset.PassengerType.SENIOR_CITIZEN) {
+            return seniorRunningTotal;
+        }
+
+        return adultRunningTotal;
+    }
+
+    public void updateRunningTotal(CityRideDataset.PassengerType passengerType, BigDecimal chargedFare) {
+        if (passengerType == CityRideDataset.PassengerType.STUDENT) {
+            studentRunningTotal = studentRunningTotal.add(chargedFare);
+        } else if (passengerType == CityRideDataset.PassengerType.CHILD) {
+            childRunningTotal = childRunningTotal.add(chargedFare);
+        } else if (passengerType == CityRideDataset.PassengerType.SENIOR_CITIZEN) {
+            seniorRunningTotal = seniorRunningTotal.add(chargedFare);
+        } else {
+            adultRunningTotal = adultRunningTotal.add(chargedFare);
+        }
+    }
+
+    public void applyFareToJourney(Journey journey) {
+        BigDecimal baseFare = calculateBaseFare(
+                journey.getFromZone(),
+                journey.getToZone(),
+                journey.getTimeBand()
+        );
+
+        BigDecimal discountRate = getDiscountRate(journey.getPassengerType());
+        BigDecimal discountAmount = baseFare.multiply(discountRate);
+        BigDecimal discountedFare = baseFare.subtract(discountAmount);
+        BigDecimal chargedFare = applyDailyCap(journey.getPassengerType(), discountedFare);
+
+        journey.setBaseFare(roundToTwoDecimals(baseFare));
+        journey.setDiscountAmount(roundToTwoDecimals(discountAmount));
+        journey.setDiscountedFare(roundToTwoDecimals(discountedFare));
+        journey.setChargedFare(roundToTwoDecimals(chargedFare));
+
+        updateRunningTotal(journey.getPassengerType(), roundToTwoDecimals(chargedFare));
+    }
+
+    public BigDecimal applyDailyCap(CityRideDataset.PassengerType passengerType, BigDecimal discountedFare) {
+        BigDecimal runningTotal = getRunningTotal(passengerType);
+        BigDecimal dailyCap = getDailyCap(passengerType);
+
+        if (runningTotal.compareTo(dailyCap) >= 0) {
+            return BigDecimal.ZERO.setScale(2, RoundingMode.HALF_UP);
+        }
+
+        if (runningTotal.add(discountedFare).compareTo(dailyCap) > 0) {
+            return dailyCap.subtract(runningTotal);
+        }
+
+        return discountedFare;
+    }
+
+    public BigDecimal roundToTwoDecimals(BigDecimal value) {
+        return value.setScale(2, RoundingMode.HALF_UP);
+    }
+
+    public void resetTotals() {
+        adultRunningTotal = BigDecimal.ZERO;
+        studentRunningTotal = BigDecimal.ZERO;
+        childRunningTotal = BigDecimal.ZERO;
+        seniorRunningTotal = BigDecimal.ZERO;
+    }
+}
+```
 
 ------------------------------------------------------------------------------------------------------------------------------
 
