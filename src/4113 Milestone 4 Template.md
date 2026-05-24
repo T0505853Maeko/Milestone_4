@@ -332,6 +332,281 @@ public class FareCalculator {
     }
 }
 ```
+Manage journey
+```java
+import java.math.BigDecimal;
+import java.util.ArrayList;
+
+// JourneyManager.java
+// This class stores, removes, filters, and summarises journeys in memory.
+
+public class JourneyManager {
+
+    // Attributes
+    private ArrayList<Journey> journeys;
+    private FareCalculator fareCalculator;
+    private int nextJourneyId;
+
+    // Constructors
+    public JourneyManager() {
+        this.journeys = new ArrayList<>();
+        this.fareCalculator = new FareCalculator();
+        this.nextJourneyId = 1;
+    }
+
+    // Getter methods
+    public ArrayList<Journey> getJourneys() {
+        return journeys;
+    }
+
+    public FareCalculator getFareCalculator() {
+        return fareCalculator;
+    }
+
+    public int getNextJourneyId() {
+        return nextJourneyId;
+    }
+
+    // Setter methods
+    public void setJourneys(ArrayList<Journey> journeys) {
+        this.journeys = journeys;
+    }
+
+    public void setFareCalculator(FareCalculator fareCalculator) {
+        this.fareCalculator = fareCalculator;
+    }
+
+    public void setNextJourneyId(int nextJourneyId) {
+        this.nextJourneyId = nextJourneyId;
+    }
+
+    // Journey management methods
+    public Journey addJourney(String journeyDate, int fromZone, int toZone,
+                              CityRideDataset.TimeBand timeBand,
+                              CityRideDataset.PassengerType passengerType) {
+
+        Journey journey = new Journey(
+                nextJourneyId,
+                journeyDate,
+                fromZone,
+                toZone,
+                timeBand,
+                passengerType);
+
+        fareCalculator.applyFareToJourney(journey);
+        journeys.add(journey);
+        nextJourneyId++;
+
+        return journey;
+    }
+
+    public boolean removeJourneyById(int journeyId) {
+        Journey journeyToRemove = findJourneyById(journeyId);
+
+        if (journeyToRemove == null) {
+            return false;
+        }
+
+        journeys.remove(journeyToRemove);
+        recalculateAllFares();
+
+        return true;
+    }
+
+    public Journey findJourneyById(int journeyId) {
+        for (Journey journey : journeys) {
+            if (journey.getJourneyId() == journeyId) {
+                return journey;
+            }
+        }
+
+        return null;
+    }
+
+    public ArrayList<Journey> filterByPassengerType(CityRideDataset.PassengerType passengerType) {
+        ArrayList<Journey> filteredJourneys = new ArrayList<>();
+
+        for (Journey journey : journeys) {
+            if (journey.getPassengerType() == passengerType) {
+                filteredJourneys.add(journey);
+            }
+        }
+
+        return filteredJourneys;
+    }
+
+    public ArrayList<Journey> filterByTimeBand(CityRideDataset.TimeBand timeBand) {
+        ArrayList<Journey> filteredJourneys = new ArrayList<>();
+
+        for (Journey journey : journeys) {
+            if (journey.getTimeBand() == timeBand) {
+                filteredJourneys.add(journey);
+            }
+        }
+
+        return filteredJourneys;
+    }
+
+    public ArrayList<Journey> filterByZone(int zone) {
+        ArrayList<Journey> filteredJourneys = new ArrayList<>();
+
+        for (Journey journey : journeys) {
+            if (journey.getFromZone() == zone || journey.getToZone() == zone) {
+                filteredJourneys.add(journey);
+            }
+        }
+
+        return filteredJourneys;
+    }
+
+    public ArrayList<Journey> filterByDate(String journeyDate) {
+        ArrayList<Journey> filteredJourneys = new ArrayList<>();
+
+        for (Journey journey : journeys) {
+            if (journey.getJourneyDate().equals(journeyDate)) {
+                filteredJourneys.add(journey);
+            }
+        }
+
+        return filteredJourneys;
+    }
+
+    // Summary methods
+    public int getTotalJourneyCount() {
+        return journeys.size();
+    }
+
+    public BigDecimal getTotalChargedCost() {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Journey journey : journeys) {
+            total = total.add(journey.getChargedFare());
+        }
+
+        return fareCalculator.roundToTwoDecimals(total);
+    }
+
+    public BigDecimal getAverageCostPerJourney() {
+        if (journeys.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal journeyCount = new BigDecimal(journeys.size());
+
+        return fareCalculator.roundToTwoDecimals(
+                getTotalChargedCost().divide(journeyCount, 2, BigDecimal.ROUND_HALF_UP));
+    }
+
+    public Journey getMostExpensiveJourney() {
+        if (journeys.isEmpty()) {
+            return null;
+        }
+
+        Journey mostExpensiveJourney = journeys.get(0);
+
+        for (Journey journey : journeys) {
+            if (journey.getChargedFare().compareTo(mostExpensiveJourney.getChargedFare()) > 0) {
+                mostExpensiveJourney = journey;
+            }
+        }
+
+        return mostExpensiveJourney;
+    }
+
+    public int countPeakJourneys() {
+        int count = 0;
+
+        for (Journey journey : journeys) {
+            if (journey.getTimeBand() == CityRideDataset.TimeBand.PEAK) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int countOffPeakJourneys() {
+        int count = 0;
+
+        for (Journey journey : journeys) {
+            if (journey.getTimeBand() == CityRideDataset.TimeBand.OFF_PEAK) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public int countJourneysByPassengerType(CityRideDataset.PassengerType passengerType) {
+        int count = 0;
+
+        for (Journey journey : journeys) {
+            if (journey.getPassengerType() == passengerType) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public BigDecimal getPreDiscountTotalByPassengerType(CityRideDataset.PassengerType passengerType) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Journey journey : journeys) {
+            if (journey.getPassengerType() == passengerType) {
+                total = total.add(journey.getBaseFare());
+            }
+        }
+
+        return fareCalculator.roundToTwoDecimals(total);
+    }
+
+    public BigDecimal getDiscountedTotalByPassengerType(CityRideDataset.PassengerType passengerType) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Journey journey : journeys) {
+            if (journey.getPassengerType() == passengerType) {
+                total = total.add(journey.getDiscountedFare());
+            }
+        }
+
+        return fareCalculator.roundToTwoDecimals(total);
+    }
+
+    public BigDecimal getChargedTotalByPassengerType(CityRideDataset.PassengerType passengerType) {
+        BigDecimal total = BigDecimal.ZERO;
+
+        for (Journey journey : journeys) {
+            if (journey.getPassengerType() == passengerType) {
+                total = total.add(journey.getChargedFare());
+            }
+        }
+
+        return fareCalculator.roundToTwoDecimals(total);
+    }
+
+    public boolean hasReachedCap(CityRideDataset.PassengerType passengerType) {
+        BigDecimal chargedTotal = getChargedTotalByPassengerType(passengerType);
+        BigDecimal dailyCap = fareCalculator.getDailyCap(passengerType);
+
+        return chargedTotal.compareTo(dailyCap) >= 0;
+    }
+
+    public void resetDay() {
+        journeys.clear();
+        fareCalculator.resetTotals();
+        nextJourneyId = 1;
+    }
+
+    public void recalculateAllFares() {
+        fareCalculator.resetTotals();
+
+        for (Journey journey : journeys) {
+            fareCalculator.applyFareToJourney(journey);
+        }
+    }
+}
+```
 
 ------------------------------------------------------------------------------------------------------------------------------
 
